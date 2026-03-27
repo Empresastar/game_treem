@@ -3,7 +3,10 @@ const P2PModule = {
     connection: null,
     init(onDataReceived) {
         this.peer = new Peer();
-        this.peer.on('open', (id) => document.getElementById('display-id').innerText = id);
+        this.peer.on('open', (id) => {
+            const el = document.getElementById('display-id');
+            if(el) el.innerText = id;
+        });
         this.peer.on('connection', (conn) => this.setupConn(conn, onDataReceived));
     },
     connect(targetId, onDataReceived) {
@@ -13,8 +16,8 @@ const P2PModule = {
     setupConn(conn, onDataReceived) {
         this.connection = conn;
         conn.on('open', () => {
-            document.getElementById('sync-status').innerText = "🟢 Conectado";
-            // Se o Host já tiver uma pasta aberta, ele pode reenviar a lista aqui
+            const status = document.getElementById('sync-status');
+            if(status) status.innerText = "🟢 Conectado";
         });
         conn.on('data', (data) => onDataReceived(data));
     },
