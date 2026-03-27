@@ -1,6 +1,35 @@
-<link rel="stylesheet" href="css/style.css">
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Deadly Rails - GitHub Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="crosshair"></div>
+    
+    <div class="ui stats">
+        <h1 class="text-2xl font-black italic text-yellow-400">DEADLY RAILS</h1>
+        <div class="font-mono text-sm">VELOCIDADE: <span id="speed">0</span> km/h</div>
+        <div class="bar-container"><div id="steamFill"></div></div>
+    </div>
 
-<script src="js/world.js"></script>
-<script src="js/train.js"></script>
-<script src="js/player.js"></script>
-<script src="js/main.js"></script>
+    <div class="ui money">$ <span id="moneyText">0</span></div>
+    <div id="prompt" class="ui"></div>
+
+    <div class="ui backpack">
+        <div class="text-[10px] opacity-70">MOCHILA [X] DROP</div>
+        <div class="text-lg font-bold"><span id="invText">0</span> / 6</div>
+        <div class="bar-container"><div id="invBar"></div></div>
+        <div id="itemDesc" class="text-[10px] text-yellow-200 mt-1 italic">Vazio</div>
+    </div>
+
+    <script src="js/world.js"></script>
+    <script src="js/train.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
