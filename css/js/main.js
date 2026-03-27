@@ -2,16 +2,17 @@ window.onload = async () => {
     let isRemoteUpdate = false;
     let previewTimeout;
 
-    // Inicializa Editor
+    // Inicializa o Monaco Editor
     await EditorModule.init('monaco-editor').catch(() => console.error("Erro Editor"));
 
-    // Função para renderizar Preview e Console
+    // Lógica de Atualização do Preview e Console
     const updatePreview = () => {
         const iframe = document.getElementById('preview-iframe');
         const code = EditorModule.instance.getValue();
         const consoleEl = document.getElementById('fake-console');
-        consoleEl.innerHTML = ""; // Limpa console ao rodar novo código
+        consoleEl.innerHTML = ""; 
 
+        // Injeta script para capturar logs do iframe e mandar para o App principal
         const consoleScript = `
             <script>
                 const _log = console.log;
@@ -20,7 +21,7 @@ window.onload = async () => {
                     _log.apply(console, args);
                 };
                 window.onerror = function(msg) {
-                    window.parent.postMessage({ type: 'LOG', content: 'ERROR: ' + msg }, '*');
+                    window.parent.postMessage({ type: 'LOG', content: 'ERRO: ' + msg }, '*');
                 };
             <\/script>
         `;
@@ -29,7 +30,7 @@ window.onload = async () => {
         iframe.src = URL.createObjectURL(blob);
     };
 
-    // Listener para o Console Virtual
+    // Escuta as mensagens de LOG vindas do iframe
     window.addEventListener('message', (event) => {
         if (event.data.type === 'LOG') {
             const div = document.createElement('div');
@@ -39,11 +40,11 @@ window.onload = async () => {
         }
     });
 
-    // Handler de dados P2P
     const handleData = (data) => {
         if (data.type === 'FOLDER_SYNC') {
             FilesModule.renderFileList(data.files);
         }
+
         if (data.type === 'SYNC' || data.type === 'FILE') {
             isRemoteUpdate = true;
             if (data.type === 'FILE') {
@@ -60,7 +61,7 @@ window.onload = async () => {
 
     P2PModule.init(handleData);
 
-    // Eventos de Botões
+    // Eventos de Interface
     document.getElementById('open-folder-btn').onclick = () => FilesModule.openFolder();
     document.getElementById('create-file-btn').onclick = () => FilesModule.createFile();
     document.getElementById('connect-btn').onclick = () => {
@@ -68,12 +69,12 @@ window.onload = async () => {
         if(id) P2PModule.connect(id, handleData);
     };
 
-    // Atualização em Tempo Real
+    // Sincronização P2P e Auto-Preview ao digitar
     EditorModule.instance.onDidChangeModelContent(() => {
         if (!isRemoteUpdate) {
             P2PModule.send({ type: 'SYNC', content: EditorModule.instance.getValue() });
         }
         clearTimeout(previewTimeout);
-        previewTimeout = setTimeout(updatePreview, 800);
+        previewTimeout = setTimeout(updatePreview, 800); // Atualiza após 0.8s de pausa
     });
 };
