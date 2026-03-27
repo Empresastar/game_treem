@@ -15,7 +15,6 @@ function setupWorld() {
         s.position.set(0, 0.1, z);
         scene.add(s);
     }
-
     for(let i=0; i<80; i++) {
         let z = -i * 60;
         spawnItem(Math.random() * 40 - 20, z);
