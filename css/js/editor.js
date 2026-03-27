@@ -3,25 +3,18 @@ const EditorModule = {
     init(idDiv) {
         return new Promise((resolve, reject) => {
             const container = document.getElementById(idDiv);
-            if (!container) {
-                console.error(`Erro crítico: Div #${idDiv} não encontrada.`);
-                return reject();
-            }
+            if (!container) return reject();
 
             require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs' }});
             require(['vs/editor/editor.main'], () => {
-                try {
-                    this.instance = monaco.editor.create(container, {
-                        theme: 'vs-dark',
-                        automaticLayout: true,
-                        fontSize: 14,
-                        language: 'javascript',
-                        minimap: { enabled: false }
-                    });
-                    resolve();
-                } catch (err) {
-                    reject(err);
-                }
+                this.instance = monaco.editor.create(container, {
+                    theme: 'vs-dark',
+                    automaticLayout: true,
+                    fontSize: 14,
+                    language: 'javascript',
+                    minimap: { enabled: false }
+                });
+                resolve();
             });
         });
     },
